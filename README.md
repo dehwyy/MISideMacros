@@ -4,5 +4,5 @@
 - Press `0` on keyboard to trigger double-ESC, which will skip subtitles.
 
 ## Installation
-- Go to [releases]().
+- Go to [releases](https://github.com/dehwyy/MISideSpeedrunMacros/releases).
 - Download ***.exe*** file from assets.
