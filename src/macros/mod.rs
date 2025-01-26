@@ -1,50 +1,13 @@
-use rdev::{Button, EventType, Key};
+mod builder;
+pub use builder::KeyMacrosBuilder;
 
-type Action = fn() -> ();
+mod trigger_key;
+pub use trigger_key::TriggerKey;
 
-#[derive(Clone, PartialEq, Eq)]
-pub enum TriggerKey {
-    Keyboard(Key),
-    MouseButton(Button),
-}
+mod action;
+use action::Action;
+pub use action::PrepandAction;
 
-impl TryFrom<EventType> for TriggerKey {
-    type Error = ();
-    fn try_from(event_type: EventType) -> Result<Self, Self::Error> {
-        match event_type {
-            EventType::KeyPress(key) => Ok(TriggerKey::Keyboard(key)),
-            EventType::ButtonPress(button) => Ok(TriggerKey::MouseButton(button)),
-            _ => Err(()),
-        }
-    }
-}
-
-pub struct KeyMacrosBuilder {
-    trigger_key: TriggerKey,
-    actions: Vec<Action>,
-}
-
-impl KeyMacrosBuilder {
-    pub fn new(trigger_key: TriggerKey) -> KeyMacrosBuilder {
-        KeyMacrosBuilder {
-            trigger_key,
-            actions: Vec::new(),
-        }
-    }
-
-    pub fn with_actions(mut self, actions: Vec<Action>) -> Self {
-        self.actions.extend(actions);
-        self
-    }
-
-    pub fn build(self) -> KeyMacros {
-        KeyMacros {
-            trigger_key: self.trigger_key,
-            actions: self.actions,
-        }
-    }
-}
-#[derive(Clone)]
 pub struct KeyMacros {
     trigger_key: TriggerKey,
     actions: Vec<Action>,

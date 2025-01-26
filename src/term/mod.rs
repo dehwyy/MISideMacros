@@ -1,10 +1,14 @@
 mod color;
-use std::fmt::Display;
+use std::{
+    fmt::Display,
+    io::{Write, stdout},
+};
 
 pub use color::Color;
 
-pub fn println_with_color(s: impl Display, color: Color) {
-    println!("{}{}", ansi(color.ansi_code()), s);
+pub fn print_colored(s: impl Display, color: Color) {
+    print!("{}{}", ansi(color.ansi_code()), s);
+    stdout().flush().expect("Failed to flush stdout")
 }
 
 fn ansi<S: Display>(s: S) -> String {
