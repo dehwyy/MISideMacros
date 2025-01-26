@@ -1,7 +1,8 @@
 mod print;
 mod scenarios;
 
-use dialoguer::{Select, theme::ColorfulTheme};
+use dialoguer::Select;
+use dialoguer::theme::ColorfulTheme;
 
 pub fn run() {
     print::welcome();
@@ -9,10 +10,9 @@ pub fn run() {
     let selection = select_scenario();
     print::newline();
 
-    match selection {
-        1 => scenarios::EscMacros::run(),
-        _ => return,
-    };
+    if selection == 1 {
+        scenarios::EscMacros::run()
+    }
 }
 
 fn select_scenario() -> usize {

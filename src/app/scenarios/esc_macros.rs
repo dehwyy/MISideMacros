@@ -1,9 +1,7 @@
 use rdev::{Event, EventType, Key, listen};
 
-use crate::{
-    app::print,
-    macros::{KeyMacros, KeyMacrosBuilder, PrepandAction, TriggerKey},
-};
+use crate::app::print;
+use crate::macros::{KeyMacros, KeyMacrosBuilder, PrepandAction, TriggerKey};
 
 #[derive(Default)]
 pub struct EscMacros {
@@ -16,7 +14,7 @@ pub struct EscMacros {
 impl EscMacros {
     pub fn run() {
         let mut s = Self::default();
-        if let Err(err) = listen(move |event| (&mut s).handle(event)) {
+        if let Err(err) = listen(move |event| s.handle(event)) {
             eprintln!("Error: {:?}", err);
         }
     }
@@ -54,7 +52,7 @@ impl EscMacros {
                         self.macros = None;
                         return;
                     }
-                }
+                },
                 Key::RightBracket => {
                     // If NOT during Trigger binding
                     if self.trigger.is_some() {
@@ -62,8 +60,8 @@ impl EscMacros {
                         self.fps = None;
                         return;
                     }
-                }
-                _ => {}
+                },
+                _ => {},
             }
         }
 
@@ -82,11 +80,11 @@ impl EscMacros {
             if let EventType::KeyPress(key) = event.event_type {
                 match key {
                     Key::Backspace => {
-                        if fps.len() > 0 {
+                        if !fps.is_empty() {
                             _ = fps.pop();
                             print::info("\x1b[1D\x1b[0J"); // go 1 column left and erase to the end
                         }
-                    }
+                    },
                     Key::Return => {
                         let fps = fps.parse::<u64>().expect("Wrong fps handling! @dehwyy");
                         self.fps = Some(fps);
@@ -100,14 +98,14 @@ impl EscMacros {
                         if let Some(trigger) = self.trigger.clone() {
                             self.macros = Some(build_macros(trigger, fps));
                         }
-                    }
+                    },
                     // Otherwise, try to parse input value
                     _ => {
                         if let Some(digit) = digit_from_key(key) {
                             print::info(format!("{digit}"));
                             fps.push_str(&digit.to_string());
                         }
-                    }
+                    },
                 }
             }
             return;
@@ -128,24 +126,19 @@ impl EscMacros {
                 self.trigger = Some(trigger.clone());
                 print::successln(format!(
                     "Selected trigger! <{}>",
-                    event
-                        .name
-                        .unwrap_or("Could not display, but it works".to_string())
+                    event.name.unwrap_or("Could not display, but it works".to_string())
                 ));
                 print::infoln("To rebind trigger, press `\\`\n");
 
                 // ! Rebuild macros!
                 self.macros = Some(build_macros(trigger, self.fps.unwrap()));
             }
-            return;
         }
     }
 }
 
 fn build_macros(trigger: TriggerKey, fps: u64) -> KeyMacros {
-    print::successln(format!(
-        "Macros built with: fps={fps}, triggerKey={trigger:?}",
-    ));
+    print::successln(format!("Macros built with: fps={fps}, triggerKey={trigger:?}",));
     KeyMacrosBuilder::new(trigger).build_prepand(PrepandAction::EscMacros(fps))
 }
 

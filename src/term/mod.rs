@@ -1,8 +1,6 @@
 mod color;
-use std::{
-    fmt::Display,
-    io::{Write, stdout},
-};
+use std::fmt::Display;
+use std::io::{Write, stdout};
 
 pub use color::Color;
 

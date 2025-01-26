@@ -1,10 +1,11 @@
-use std::{thread::sleep, time::Duration};
+use std::thread::sleep;
+use std::time::Duration;
 
 use rdev::{EventType, Key, simulate};
 
 use crate::boxed;
 
-pub(super) type Action = Box<dyn Fn() -> ()>;
+pub(super) type Action = Box<dyn Fn()>;
 
 pub enum PrepandAction {
     EscMacros(u64), // (fps)
