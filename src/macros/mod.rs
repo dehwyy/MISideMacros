@@ -24,3 +24,12 @@ impl KeyMacros {
         }
     }
 }
+
+impl std::fmt::Display for KeyMacros {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("KeyMacros")
+            .field("trigger_key", &self.trigger_key)
+            // .field("actions", &self.actions)
+            .finish()
+    }
+}

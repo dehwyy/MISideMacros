@@ -11,7 +11,7 @@ pub fn run() {
     print::newline();
 
     if selection == 1 {
-        scenarios::EscMacros::run()
+        scenarios::EscMacros::new().run();
     }
 }
 
