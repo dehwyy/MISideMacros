@@ -1,7 +1,4 @@
-use std::cell::RefCell;
-use std::rc::Rc;
-
-use rdev::{Event, EventType, Key, listen};
+use rdev::{Event, Key, listen};
 
 use crate::app::print;
 use crate::macros::{KeyMacros, KeyMacrosBuilder, PrepandAction, TriggerKey};
@@ -12,6 +9,8 @@ enum Action {
     BindTrigger,
     RunningMacros(KeyMacros),
 }
+
+const TRIGGER_REBIND_KEY: TriggerKey = TriggerKey::Keyboard(Key::BackSlash);
 
 #[derive(Default)]
 pub struct EscMacros {
@@ -60,7 +59,7 @@ impl EscMacros {
 
             Action::BindTrigger => match trigger_key {
                 // Valid key -> rebuild macros with new trigger
-                Some(key) => {
+                Some(key) if key != TRIGGER_REBIND_KEY => {
                     print::clear_current_line();
                     print::infoln(format!("Selected trigger: {key:?}"));
                     print::infoln("To rebind, press `\\`");
@@ -70,14 +69,14 @@ impl EscMacros {
                     ));
                 },
                 // Invalid key -> Still have to Bind Trigger -> current_action should stay unchanged
-                None => {},
+                _ => {},
             },
         }
     }
 
     fn handle_rebind_keys(&self, key: &TriggerKey) -> Option<Action> {
         match key {
-            TriggerKey::Keyboard(Key::BackSlash) => Some(Action::BindTrigger),
+            &TRIGGER_REBIND_KEY => Some(Action::BindTrigger),
             _ => None,
         }
     }
@@ -94,7 +93,7 @@ impl EscMacros {
 
         match &next_action {
             Action::BindTrigger => {
-                print::info("Press desired trigger (except '\\'):");
+                print::info("Press desired trigger (except '\\'): ");
             },
             Action::RunningMacros(macros) => {
                 print::successln(format!("Macros build: {macros}"));
